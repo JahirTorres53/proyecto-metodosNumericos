@@ -1,0 +1,1587 @@
+% =========================================================================
+%  PROYECTO UNIFICADO — MÉTODOS NUMÉRICOS
+%  Universidad Mariano Gálvez de Guatemala
+% =========================================================================
+%  FLUJO:
+%    PASO 1 — Ingresar f(x) y graficarla
+%    PASO 2 — Seleccionar el método a aplicar sobre f(x)
+%             (los métodos que no usan f(x) tienen su propio ingreso)
+% =========================================================================
+
+function MetodosNumericos_UMG()
+    clc; close all;
+
+    % ======================================================================
+    %  PASO 1 — Ventana de ingreso de función
+    % ======================================================================
+    paso1_ingreso_funcion();
+end
+
+% ==========================================================================
+%  PASO 1: Ventana para ingresar f(x) y graficarla
+% ==========================================================================
+function paso1_ingreso_funcion()
+
+    fig1 = figure('Name','Métodos Numéricos — UMG  |  Paso 1: Ingresa la función',...
+                  'NumberTitle','off',...
+                  'Color',[0.07 0.07 0.12],...
+                  'Position',[180 180 640 420],...
+                  'Resize','off','MenuBar','none','ToolBar','none');
+
+    % --- Encabezado ---
+    uicontrol('Parent',fig1,'Style','text',...
+              'String','MÉTODOS NUMÉRICOS — UMG',...
+              'FontSize',17,'FontWeight','bold',...
+              'ForegroundColor',[0.20 0.88 1.00],...
+              'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.04 0.86 0.92 0.10],...
+              'HorizontalAlignment','center');
+
+    uicontrol('Parent',fig1,'Style','text',...
+              'String','Universidad Mariano Gálvez de Guatemala',...
+              'FontSize',9,'ForegroundColor',[0.55 0.55 0.70],...
+              'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.04 0.79 0.92 0.06],...
+              'HorizontalAlignment','center');
+
+    % --- Separador visual ---
+    uicontrol('Parent',fig1,'Style','text','String',repmat('─',1,80),...
+              'ForegroundColor',[0.25 0.25 0.38],'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.04 0.75 0.92 0.03]);
+
+    % --- Instrucción Paso 1 ---
+    uicontrol('Parent',fig1,'Style','text',...
+              'String','PASO 1 — Ingresa la función f(x) a analizar',...
+              'FontSize',11,'FontWeight','bold',...
+              'ForegroundColor',[1.00 0.82 0.20],...
+              'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.04 0.68 0.92 0.06],...
+              'HorizontalAlignment','left');
+
+    uicontrol('Parent',fig1,'Style','text',...
+              'String',['Escribe f(x) usando sintaxis MATLAB:   ^ para potencia,  * para multiplicar,' char(10) ...
+                        'sin(x)  cos(x)  exp(x)  log(x)  sqrt(x)   |   Ejemplo:  x^3 - 2*x - 5'],...
+              'FontSize',9,'ForegroundColor',[0.75 0.75 0.85],...
+              'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.04 0.55 0.92 0.12],...
+              'HorizontalAlignment','left');
+
+    % --- Campo de texto para f(x) ---
+    uicontrol('Parent',fig1,'Style','text','String','f(x) =',...
+              'FontSize',12,'FontWeight','bold','ForegroundColor',[0.20 0.88 1.00],...
+              'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.04 0.44 0.10 0.07],...
+              'HorizontalAlignment','right');
+
+    hEdit = uicontrol('Parent',fig1,'Style','edit',...
+                      'String','x^3 - 2*x - 5',...
+                      'FontSize',13,'FontName','Courier New',...
+                      'ForegroundColor',[0.95 0.95 0.98],...
+                      'BackgroundColor',[0.14 0.14 0.24],...
+                      'Units','normalized','Position',[0.16 0.44 0.78 0.08],...
+                      'HorizontalAlignment','left');
+
+    % --- Rango de graficación ---
+    uicontrol('Parent',fig1,'Style','text',...
+              'String','Rango para graficar:',...
+              'FontSize',9,'ForegroundColor',[0.75 0.75 0.85],...
+              'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.04 0.33 0.22 0.07],...
+              'HorizontalAlignment','left');
+
+    uicontrol('Parent',fig1,'Style','text','String','x min =',...
+              'FontSize',9,'ForegroundColor',[0.75 0.75 0.85],...
+              'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.27 0.33 0.10 0.07],...
+              'HorizontalAlignment','right');
+
+    hXmin = uicontrol('Parent',fig1,'Style','edit','String','-5',...
+                      'FontSize',11,'FontName','Courier New',...
+                      'ForegroundColor',[0.95 0.95 0.98],...
+                      'BackgroundColor',[0.14 0.14 0.24],...
+                      'Units','normalized','Position',[0.38 0.34 0.16 0.07]);
+
+    uicontrol('Parent',fig1,'Style','text','String','x max =',...
+              'FontSize',9,'ForegroundColor',[0.75 0.75 0.85],...
+              'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.57 0.33 0.10 0.07],...
+              'HorizontalAlignment','right');
+
+    hXmax = uicontrol('Parent',fig1,'Style','edit','String','5',...
+                      'FontSize',11,'FontName','Courier New',...
+                      'ForegroundColor',[0.95 0.95 0.98],...
+                      'BackgroundColor',[0.14 0.14 0.24],...
+                      'Units','normalized','Position',[0.68 0.34 0.16 0.07]);
+
+    % --- Mensaje de error ---
+    hMsg = uicontrol('Parent',fig1,'Style','text','String','',...
+                     'FontSize',9,'ForegroundColor',[1.00 0.35 0.35],...
+                     'BackgroundColor',[0.07 0.07 0.12],...
+                     'Units','normalized','Position',[0.04 0.24 0.92 0.07],...
+                     'HorizontalAlignment','left');
+
+    % --- Botón Graficar y continuar ---
+    uicontrol('Parent',fig1,'Style','pushbutton',...
+              'String','📈  Graficar f(x)  →  Paso 2',...
+              'FontSize',12,'FontWeight','bold',...
+              'ForegroundColor',[0.05 0.05 0.05],...
+              'BackgroundColor',[0.20 0.85 0.45],...
+              'Units','normalized','Position',[0.15 0.10 0.70 0.10],...
+              'Callback',@(~,~) cb_graficar(hEdit, hXmin, hXmax, hMsg, fig1));
+
+    % --- Botones de métodos especiales (sin f(x)) ---
+    uicontrol('Parent',fig1,'Style','text',...
+              'String','Métodos que no requieren f(x):',...
+              'FontSize',8,'ForegroundColor',[0.50 0.50 0.65],...
+              'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.04 0.02 0.40 0.06],...
+              'HorizontalAlignment','left');
+
+    uicontrol('Parent',fig1,'Style','pushbutton',...
+              'String','Álgebra / Polinomios ▸',...
+              'FontSize',9,'FontWeight','bold',...
+              'ForegroundColor',[0.95 0.95 0.98],...
+              'BackgroundColor',[0.28 0.15 0.45],...
+              'Units','normalized','Position',[0.46 0.02 0.50 0.07],...
+              'Callback',@(~,~) menu_especiales(fig1));
+
+    uiwait(fig1);
+end
+
+% -------------------------------------------------------------------------
+%  Callback del botón "Graficar"
+% -------------------------------------------------------------------------
+function cb_graficar(hEdit, hXmin, hXmax, hMsg, fig1)
+    funcion_str = strtrim(get(hEdit,'String'));
+    xmin_str    = strtrim(get(hXmin,'String'));
+    xmax_str    = strtrim(get(hXmax,'String'));
+
+    % Validaciones
+    funcion_vec = strrep(funcion_str, '^', '.^');
+    ok_f = true;
+    try
+        f = str2func(['@(x) ' funcion_vec]);
+        vt = f(1.0);
+        if ~isnumeric(vt)||~isscalar(vt), error('bad'); end
+    catch
+        ok_f = false;
+    end
+
+    xmin_num = str2double(xmin_str);
+    xmax_num = str2double(xmax_str);
+    ok_rango = ~isnan(xmin_num) && ~isnan(xmax_num) && xmin_num < xmax_num;
+
+    if ~ok_f
+        set(hMsg,'String','⚠  f(x) tiene sintaxis inválida. Usa * para multiplicar (ej: 2*x^2 + 3*x).'); return
+    end
+    if ~ok_rango
+        set(hMsg,'String','⚠  El rango es inválido. Verifica que x min < x max y sean números.'); return
+    end
+
+    set(hMsg,'String','');
+
+    % --- Graficar f(x) ---
+    x_vec = linspace(xmin_num, xmax_num, 900);
+    y_vec = arrayfun(@(v) evalSeg(f, v), x_vec);
+
+    fig_graf = figure('Name',['Gráfica de  f(x) = ' funcion_str],...
+                      'Color',[0.07 0.07 0.12],...
+                      'Position',[730 120 700 540]);
+
+    ax = gca;
+    hold(ax,'on'); grid(ax,'on'); box(ax,'on');
+    set(ax,'Color',[0.10 0.10 0.17],...
+           'GridColor',[0.30 0.30 0.42],'GridAlpha',0.55,...
+           'XColor',[0.82 0.82 0.92],'YColor',[0.82 0.82 0.92],...
+           'FontSize',11,'FontName','Courier New',...
+           'XAxisLocation','origin','YAxisLocation','origin');
+
+    % Sombra bajo la curva
+    y_base = zeros(size(y_vec));
+    y_fill = y_vec; y_fill(isnan(y_fill)) = 0;
+    fill(ax,[x_vec fliplr(x_vec)],[y_fill y_base],...
+         [0.20 0.75 1.00],'FaceAlpha',0.08,'EdgeColor','none','HandleVisibility','off');
+
+    plot(ax, x_vec, y_vec, 'Color',[0.20 0.75 1.00],'LineWidth',2.6,...
+         'DisplayName',['f(x) = ' funcion_str]);
+
+    % Eje X e Y explícitos
+    yline(ax, 0,'Color',[0.55 0.55 0.68],'LineWidth',1.1,'HandleVisibility','off');
+    xline(ax, 0,'Color',[0.55 0.55 0.68],'LineWidth',1.1,'HandleVisibility','off');
+
+    % Marcar cruces con el eje X aproximadas (raíces visibles)
+    try
+        signo = sign(y_vec);
+        cruces = find(diff(signo) ~= 0 & ~isnan(y_vec(1:end-1)) & ~isnan(y_vec(2:end)));
+        for k = 1:min(length(cruces), 8)
+            xc = x_vec(cruces(k));
+            scatter(ax, xc, 0, 80, [0.20 1.00 0.55], 'o','filled',...
+                    'MarkerEdgeColor','w','LineWidth',0.8,'HandleVisibility','off');
+            text(ax, xc, -diff(ylim(ax))*0.04, sprintf(' %.3f', xc),...
+                 'Color',[0.20 1.00 0.55],'FontSize',8,'FontName','Courier New',...
+                 'HorizontalAlignment','center','HandleVisibility','off');
+        end
+    catch
+    end
+
+    xlim(ax,[xmin_num xmax_num]);
+    y_ok = y_vec(isfinite(y_vec));
+    if ~isempty(y_ok)
+        pad = max(abs(y_ok))*0.15; pad = max(pad,0.5);
+        ylim(ax,[min(y_ok)-pad, max(y_ok)+pad]);
+    end
+
+    xlabel(ax,'x','Color',[0.82 0.82 0.92],'FontSize',13,'FontWeight','bold');
+    ylabel(ax,'f(x)','Color',[0.82 0.82 0.92],'FontSize',13,'FontWeight','bold');
+    title(ax,{['f(x) = ' funcion_str],...
+              sprintf('Dominio visible: [%.4g, %.4g]', xmin_num, xmax_num)},...
+          'Color','w','FontSize',12,'FontWeight','bold','Interpreter','none');
+
+    lg = legend(ax,'show','Location','best');
+    set(lg,'Color',[0.12 0.12 0.22],'TextColor',[0.90 0.90 0.96],...
+           'EdgeColor',[0.28 0.28 0.42],'FontSize',10);
+
+    hold(ax,'off');
+
+    % --- Abrir Paso 2 ---
+    paso2_menu_metodos(funcion_str, f, fig1, fig_graf);
+end
+
+% ==========================================================================
+%  PASO 2: Menú de selección de método (ya con f(x) cargada)
+% ==========================================================================
+function paso2_menu_metodos(funcion_str, f, fig1, fig_graf)
+
+    metodos_fx = {
+        '1.  Bisección',
+        '2.  Regla Falsa  (Regula Falsi)',
+        '3.  Punto Fijo',
+        '4.  Newton-Raphson',
+        '5.  Método de la Secante',
+        '6.  Método de Müller'
+    };
+
+    fig2 = figure('Name','Métodos Numéricos — UMG  |  Paso 2: Elige el método',...
+                  'NumberTitle','off',...
+                  'Color',[0.07 0.07 0.12],...
+                  'Position',[180 120 640 500],...
+                  'Resize','off','MenuBar','none','ToolBar','none');
+
+    % Encabezado
+    uicontrol('Parent',fig2,'Style','text',...
+              'String','PASO 2 — Selecciona el método',...
+              'FontSize',14,'FontWeight','bold',...
+              'ForegroundColor',[1.00 0.82 0.20],...
+              'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.04 0.88 0.92 0.08],...
+              'HorizontalAlignment','center');
+
+    % Función cargada
+    uicontrol('Parent',fig2,'Style','text',...
+              'String',['f(x) = ' funcion_str],...
+              'FontSize',11,'FontName','Courier New',...
+              'ForegroundColor',[0.20 0.88 1.00],...
+              'BackgroundColor',[0.11 0.11 0.20],...
+              'Units','normalized','Position',[0.04 0.79 0.92 0.07],...
+              'HorizontalAlignment','center');
+
+    uicontrol('Parent',fig2,'Style','text',...
+              'String','Métodos disponibles para esta f(x):',...
+              'FontSize',9,'ForegroundColor',[0.65 0.65 0.78],...
+              'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.04 0.73 0.92 0.05],...
+              'HorizontalAlignment','left');
+
+    % Listbox de métodos
+    lb = uicontrol('Parent',fig2,'Style','listbox',...
+                   'String',metodos_fx,...
+                   'Value',1,...
+                   'FontSize',12,'FontName','Courier New',...
+                   'ForegroundColor',[0.93 0.93 0.97],...
+                   'BackgroundColor',[0.12 0.12 0.21],...
+                   'Units','normalized','Position',[0.04 0.28 0.92 0.44]);
+
+    % Botón Ejecutar
+    uicontrol('Parent',fig2,'Style','pushbutton',...
+              'String','▶  Ejecutar método seleccionado',...
+              'FontSize',12,'FontWeight','bold',...
+              'ForegroundColor',[0.05 0.05 0.05],...
+              'BackgroundColor',[0.20 0.85 0.45],...
+              'Units','normalized','Position',[0.10 0.16 0.80 0.09],...
+              'Callback',@(~,~) dispatch_metodo(lb, funcion_str, f, fig2, fig_graf));
+
+    % Botón: volver al Paso 1
+    uicontrol('Parent',fig2,'Style','pushbutton',...
+              'String','← Cambiar f(x)',...
+              'FontSize',10,...
+              'ForegroundColor',[0.90 0.90 0.95],...
+              'BackgroundColor',[0.20 0.20 0.34],...
+              'Units','normalized','Position',[0.04 0.05 0.44 0.08],...
+              'Callback',@(~,~) volver_paso1(fig2, fig_graf, fig1));
+
+    % Botón: métodos especiales
+    uicontrol('Parent',fig2,'Style','pushbutton',...
+              'String','Álgebra / Polinomios ▸',...
+              'FontSize',10,'FontWeight','bold',...
+              'ForegroundColor',[0.95 0.95 0.98],...
+              'BackgroundColor',[0.28 0.15 0.45],...
+              'Units','normalized','Position',[0.52 0.05 0.44 0.08],...
+              'Callback',@(~,~) menu_especiales(fig2));
+
+    uiwait(fig2);
+end
+
+% -------------------------------------------------------------------------
+%  Volver al Paso 1 desde el Paso 2
+% -------------------------------------------------------------------------
+function volver_paso1(fig2, fig_graf, fig1)
+    try; close(fig2); catch; end
+    try; close(fig_graf); catch; end
+    try
+        if ishandle(fig1) && isvalid(fig1)
+            uiresume(fig1);
+            close(fig1);
+        end
+    catch; end
+    paso1_ingreso_funcion();
+end
+
+% -------------------------------------------------------------------------
+%  Dispatcher: llama al método elegido con f ya cargada
+% -------------------------------------------------------------------------
+function dispatch_metodo(lb, funcion_str, f, fig2, fig_graf)
+    idx = lb.Value;
+    % Cerramos la gráfica previa para que el método genere la suya
+    try; close(fig_graf); catch; end
+    switch idx
+        case 1, run_biseccion(funcion_str, f);
+        case 2, run_regla_falsa(funcion_str, f);
+        case 3, run_punto_fijo(funcion_str, f);
+        case 4, run_newton_raphson(funcion_str, f);
+        case 5, run_secante(funcion_str, f);
+        case 6, run_muller(funcion_str, f);
+        otherwise
+            msgbox('Selecciona un método de la lista.','Aviso','warn');
+    end
+end
+
+% -------------------------------------------------------------------------
+%  Menú de métodos especiales (no usan f(x) del Paso 1)
+% -------------------------------------------------------------------------
+function menu_especiales(parent_fig)
+
+    especiales = {
+        '7.  Método de Bairstow',
+        '8.  División Sintética',
+        '9.  Polinomio de Taylor / Maclaurin',
+        '10. Newton — Parábola por 3 Puntos',
+        '11. Newton-Raphson — Sistemas 3×3',
+        '12. Sistemas 3×3  (Cramer + Matriz Inversa)',
+        '13. Cálculo de Matriz Inversa'
+    };
+
+    figE = figure('Name','Métodos Numéricos — Álgebra / Polinomios',...
+                  'NumberTitle','off','Color',[0.07 0.07 0.12],...
+                  'Position',[240 200 560 420],...
+                  'Resize','off','MenuBar','none','ToolBar','none');
+
+    uicontrol('Parent',figE,'Style','text',...
+              'String','Métodos de Álgebra y Polinomios',...
+              'FontSize',13,'FontWeight','bold',...
+              'ForegroundColor',[0.75 0.50 1.00],...
+              'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.04 0.88 0.92 0.08],...
+              'HorizontalAlignment','center');
+
+    uicontrol('Parent',figE,'Style','text',...
+              'String','Estos métodos tienen su propio ingreso de datos.',...
+              'FontSize',9,'ForegroundColor',[0.55 0.55 0.70],...
+              'BackgroundColor',[0.07 0.07 0.12],...
+              'Units','normalized','Position',[0.04 0.81 0.92 0.06],...
+              'HorizontalAlignment','center');
+
+    lbE = uicontrol('Parent',figE,'Style','listbox',...
+                    'String',especiales,'Value',1,...
+                    'FontSize',11,'FontName','Courier New',...
+                    'ForegroundColor',[0.93 0.93 0.97],...
+                    'BackgroundColor',[0.12 0.12 0.21],...
+                    'Units','normalized','Position',[0.04 0.26 0.92 0.54]);
+
+    uicontrol('Parent',figE,'Style','pushbutton',...
+              'String','▶  Ejecutar',...
+              'FontSize',12,'FontWeight','bold',...
+              'ForegroundColor',[0.05 0.05 0.05],...
+              'BackgroundColor',[0.75 0.45 1.00],...
+              'Units','normalized','Position',[0.10 0.14 0.80 0.09],...
+              'Callback',@(~,~) dispatch_especial(lbE));
+
+    uicontrol('Parent',figE,'Style','pushbutton',...
+              'String','✕  Cerrar',...
+              'FontSize',10,'ForegroundColor',[0.90 0.90 0.95],...
+              'BackgroundColor',[0.28 0.10 0.10],...
+              'Units','normalized','Position',[0.25 0.03 0.50 0.08],...
+              'Callback',@(~,~) close(figE));
+end
+
+function dispatch_especial(lbE)
+    idx = lbE.Value;
+    switch idx
+        case 1, run_bairstow();
+        case 2, run_div_sintetica();
+        case 3, run_taylor();
+        case 4, run_newton_parabola();
+        case 5, run_newton_sistema3x3();
+        case 6, run_sistemas3x3();
+        case 7, run_matriz_inversa();
+    end
+end
+
+
+% =========================================================================
+%  1. BISECCIÓN
+% =========================================================================
+function run_biseccion(funcion_str, f)
+    clc;
+
+    % Pedir parámetros del método via GUI
+    defaults = {'-5','5','0.0001','100'};
+    while true
+        prompt = {
+            sprintf(['f(x) = ' funcion_str '\n\nLímite inferior  a:']),
+            'Límite superior  b:',
+            'Tolerancia (ej. 0.0001):',
+            'Máximo de iteraciones:'
+        };
+        titulo = 'Bisección — Parámetros';
+        dims = [1 55; 1 55; 1 55; 1 55];
+        opts = struct('Interpreter','none','WindowStyle','normal');
+        resp = inputdlg(prompt, titulo, dims, defaults, opts);
+        if isempty(resp), return; end
+
+        a_num = str2double(strtrim(resp{1})); b_num = str2double(strtrim(resp{2}));
+        tol_num = str2double(strtrim(resp{3})); mit_num = round(str2double(strtrim(resp{4})));
+
+        ok_a = ~isnan(a_num); ok_b = ~isnan(b_num);
+        ok_tol = ~isnan(tol_num)&&tol_num>0&&tol_num<1;
+        ok_mit = ~isnan(mit_num)&&mit_num>=1;
+        ok_ab = ok_a&&ok_b&&a_num<b_num;
+        fa_val = NaN; fb_val = NaN; ok_sign = false;
+        if ok_a&&ok_b
+            try; fa_val=f(a_num); fb_val=f(b_num);
+                 if isreal(fa_val)&&isfinite(fa_val)&&isreal(fb_val)&&isfinite(fb_val)&&fa_val*fb_val<0
+                     ok_sign=true; end
+            catch; end
+        end
+        err='';
+        if ~ok_a||~ok_b, err=[err '• a o b inválido.\n']; end
+        if ok_a&&ok_b&&~ok_ab, err=[err '• Debe ser a < b.\n']; end
+        if ~ok_tol, err=[err '• Tolerancia inválida (entre 0 y 1).\n']; end
+        if ~ok_mit, err=[err '• Máx. iteraciones inválido.\n']; end
+        if ok_ab&&~ok_sign
+            err=[err sprintf('• f(a)=%.4g y f(b)=%.4g no tienen signos opuestos.\n  Cambia el intervalo.',fa_val,fb_val)];
+        end
+        if ~isempty(err)
+            uiwait(errordlg(sprintf(['Corrige:\n\n' err]),'Error','modal'));
+            defaults={resp{1},resp{2},resp{3},resp{4}}; continue
+        end
+        a=a_num; b=b_num; tolerancia=tol_num; maxIter=mit_num; break
+    end
+
+    fprintf('\n============================================================\n');
+    fprintf('      MÉTODO DE BISECCIÓN\n');
+    fprintf('============================================================\n');
+    fprintf('  f(x) = %s\n  [a,b]=[%.6f, %.6f]  tol=%e\n\n',funcion_str,a,b,tolerancia);
+    fprintf('  %-5s  %-12s  %-12s  %-12s  %-12s  %-12s\n','Iter','a','b','c','f(c)','Error');
+    fprintf('  %s\n',repmat('-',1,75));
+
+    iter=0; error_aprox=inf; c_old=0;
+    A=[]; B=[]; C=[]; FC=[];
+
+    while error_aprox>tolerancia && iter<maxIter
+        c=(a+b)/2;
+        if iter>0, error_aprox=abs(c-c_old); end
+        fprintf('  %-5d  %+12.6f  %+12.6f  %+12.6f  %+12.6f  %12.6f\n',...
+                iter,a,b,c,f(c),error_aprox);
+        A(end+1)=a; B(end+1)=b; C(end+1)=c; FC(end+1)=f(c);
+        if f(a)*f(c)<0, b=c; else, a=c; end
+        c_old=c; iter=iter+1;
+    end
+    fprintf('  %s\n\n',repmat('-',1,75));
+    fprintf('  Raíz aproximada: x* = %.10f\n',c);
+    fprintf('  Iteraciones: %d\n\n',iter);
+    msgbox(sprintf('✔ Bisección\n\nRaíz: x* = %.10f\nf(x*) = %.4e\nIteraciones: %d',c,f(c),iter),'Bisección','help');
+
+    % Gráfica
+    figure('Name',['Bisección — f(x) = ' funcion_str],'Color',[0.06 0.06 0.10],'Position',[100 80 1100 580]);
+    x_vec=linspace(min(A)-0.5, max(B)+0.5, 700);
+    y_vec=arrayfun(@(v) evalSeg(f,v), x_vec);
+    y_ok=y_vec(isfinite(y_vec)); y_rango=max(max(abs(y_ok))*1.4,1.0);
+
+    ax1=subplot(1,2,1); hold(ax1,'on'); grid(ax1,'on'); box(ax1,'on');
+    set(ax1,'Color',[0.10 0.10 0.16],'XColor',[0.85 0.85 0.90],'YColor',[0.85 0.85 0.90],...
+            'GridColor',[0.35 0.35 0.45],'GridAlpha',0.5,'FontSize',9,'FontName','Courier New');
+    plot(ax1,x_vec,y_vec,'Color',[0.20 0.75 1.00],'LineWidth',2.5,'DisplayName',['f(x)=' funcion_str]);
+    yline(ax1,0,'Color',[0.65 0.65 0.70],'LineWidth',1.0,'HandleVisibility','off');
+    for i=1:length(C)
+        plot(ax1,[A(i) B(i)],[0 0],'b','LineWidth',2,'HandleVisibility','off')
+        plot(ax1,C(i),0,'ro','MarkerFaceColor','r','HandleVisibility','off')
+    end
+    scatter(ax1,C(end),0,150,[0.20 1.00 0.50],'p','filled','MarkerEdgeColor','w','DisplayName',sprintf('Raíz≈%.6f',C(end)));
+    xlim(ax1,[min(A)-0.5 max(B)+0.5]); ylim(ax1,[-y_rango y_rango]);
+    xlabel(ax1,'x','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    ylabel(ax1,'f(x)','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    title(ax1,{'Bisección — Intervalos','(azul=intervalo, rojo=punto medio)'},'Color','w','FontWeight','bold');
+    lg1=legend(ax1,'show','Location','best');
+    set(lg1,'Color',[0.12 0.12 0.20],'TextColor',[0.90 0.90 0.95],'EdgeColor',[0.30 0.30 0.40]);
+
+    ax2=subplot(1,2,2); hold(ax2,'on'); grid(ax2,'on'); box(ax2,'on');
+    set(ax2,'Color',[0.10 0.10 0.16],'XColor',[0.85 0.85 0.90],'YColor',[0.85 0.85 0.90],...
+            'GridColor',[0.35 0.35 0.45],'GridAlpha',0.5,'FontSize',9,'FontName','Courier New');
+    plot(ax2,1:length(C),abs(diff([C(1) C])),'o-','Color',[0.35 0.85 1.00],'LineWidth',2,...
+         'MarkerFaceColor',[0.35 0.85 1.00],'MarkerEdgeColor','w','DisplayName','|c_n - c_{n-1}|');
+    yline(ax2,tolerancia,'--','Color',[1.00 0.40 0.40],'LineWidth',1.6,'DisplayName','Tolerancia');
+    xlabel(ax2,'Iteración','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    ylabel(ax2,'Error','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    title(ax2,'Convergencia','Color','w','FontWeight','bold');
+    lg2=legend(ax2,'show','Location','northeast');
+    set(lg2,'Color',[0.12 0.12 0.20],'TextColor',[0.90 0.90 0.95],'EdgeColor',[0.30 0.30 0.40]);
+end
+
+
+% =========================================================================
+%  2. REGLA FALSA
+% =========================================================================
+function run_regla_falsa(funcion_str, f)
+    clc;
+
+    defaults = {'-5','5','0.000001'};
+    while true
+        prompt = {
+            sprintf(['f(x) = ' funcion_str '\n\nLímite inferior  a:']),
+            'Límite superior  b:',
+            'Tolerancia (ej. 0.000001):'
+        };
+        titulo='Regla Falsa — Parámetros';
+        dims=[1 58;1 58;1 58];
+        opts=struct('Interpreter','none','WindowStyle','normal');
+        resp=inputdlg(prompt,titulo,dims,defaults,opts);
+        if isempty(resp), return; end
+
+        a_num=str2double(strtrim(resp{1})); b_num=str2double(strtrim(resp{2}));
+        tol_num=str2double(strtrim(resp{3}));
+        ok_a=~isnan(a_num); ok_b=~isnan(b_num);
+        ok_ab=ok_a&&ok_b&&a_num<b_num;
+        ok_tol=~isnan(tol_num)&&tol_num>0&&tol_num<1;
+        fa_val=NaN; fb_val=NaN; ok_sign=false;
+        if ok_ab
+            try; fa_val=f(a_num); fb_val=f(b_num);
+                 if isreal(fa_val)&&isfinite(fa_val)&&isreal(fb_val)&&isfinite(fb_val)&&fa_val*fb_val<0
+                     ok_sign=true; end
+            catch; end
+        end
+        err='';
+        if ~ok_a||~ok_b, err=[err '• a o b inválido.\n']; end
+        if ok_a&&ok_b&&~ok_ab, err=[err '• Debe ser a < b.\n']; end
+        if ~ok_tol, err=[err '• Tolerancia inválida.\n']; end
+        if ok_ab&&~ok_sign
+            err=[err sprintf('• f(a)=%.4g, f(b)=%.4g: mismo signo. Ajusta el intervalo.\n',fa_val,fb_val)];
+        end
+        if ~isempty(err)
+            uiwait(errordlg(sprintf(['Corrige:\n\n' err]),'Error','modal'));
+            defaults={resp{1},resp{2},resp{3}}; continue
+        end
+        a=a_num; b=b_num; tolerancia=tol_num; fa=fa_val; fb=fb_val; break
+    end
+
+    max_iter=100;
+    fprintf('\n============================================================\n');
+    fprintf('      MÉTODO DE LA REGLA FALSA\n');
+    fprintf('============================================================\n');
+    fprintf('  f(x) = %s\n  [a,b]=[%.6f, %.6f]  tol=%e\n\n',funcion_str,a,b,tolerancia);
+    sep=repmat('-',1,105);
+    fprintf('  %-4s  %-12s  %-12s  %-13s  %-13s  %-12s  %-13s  %-10s\n',...
+            'n','a','b','f(a)','f(b)','x_r','f(x_r)','Error %');
+    fprintf('  %s\n',sep);
+
+    a_act=a; b_act=b; xr_prev=NaN; convergio=false; num_iter=0; raiz=(a+b)/2;
+    tabla=zeros(max_iter,8); hist_xr=[]; hist_a=a; hist_b=b;
+
+    for n=1:max_iter
+        fa_act=f(a_act); fb_act=f(b_act);
+        if ~isreal(fa_act)||~isfinite(fa_act)||~isreal(fb_act)||~isfinite(fb_act)
+            fprintf('\n  DIVERGENCIA en iter %d.\n',n); break
+        end
+        denom=fa_act-fb_act;
+        if abs(denom)<1e-14, fprintf('\n  División por cero en iter %d.\n',n); break; end
+        xr=b_act-fb_act*(a_act-b_act)/denom;
+        if ~isreal(xr)||~isfinite(xr), break; end
+        fxr=f(xr);
+        if n==1, error_rel=100;
+        else
+            if abs(xr)>1e-14, error_rel=abs((xr-xr_prev)/xr)*100;
+            else, error_rel=abs(xr-xr_prev)*100; end
+        end
+        tabla(n,:)=[n,a_act,b_act,fa_act,fb_act,xr,fxr,error_rel];
+        num_iter=n; hist_xr(end+1)=xr;
+        fprintf('  %-4d  %+12.7f  %+12.7f  %+13.7f  %+13.7f  %+12.7f  %+13.7f  %9.5f%%\n',...
+                n,a_act,b_act,fa_act,fb_act,xr,fxr,error_rel);
+        if fa_act*fxr<0, b_act=xr;
+        elseif fb_act*fxr<0, a_act=xr;
+        else, convergio=true; raiz=xr; xr_prev=xr; break; end
+        hist_a(end+1)=a_act; hist_b(end+1)=b_act; xr_prev=xr;
+        if n>1&&error_rel<tolerancia*100, convergio=true; raiz=xr; break; end
+    end
+
+    if num_iter==0, msgbox('No se pudo iterar.','Error','warn'); return; end
+    tabla=tabla(1:num_iter,:);
+    fprintf('  %s\n\n',sep);
+
+    if convergio
+        fprintf('  >>> CONVERGENCIA: x* = %.10f,  f(x*) = %.4e\n\n',raiz,f(raiz));
+        msgbox(sprintf('✔ Raíz: %.10f\nf(x*): %.4e\nIter: %d\nError: %.2e%%',...
+               raiz,f(raiz),num_iter,tabla(end,8)),'Regla Falsa','help');
+    else
+        raiz=tabla(end,6);
+    end
+
+    figure('Name',['Regla Falsa — f(x) = ' funcion_str],'Color',[0.06 0.06 0.10],'Position',[100 80 1100 580]);
+    margen=max(1.5,0.5*(b-a));
+    x_min=a-margen; x_max=b+margen;
+    x_vec=linspace(x_min,x_max,800);
+    y_vec=arrayfun(@(v) evalSeg(f,v), x_vec);
+    y_ok=y_vec(isfinite(y_vec)); y_rango=max(min(max(abs(y_ok))*1.5,1e6),1.0);
+
+    ax1=subplot(1,2,1); hold(ax1,'on'); grid(ax1,'on'); box(ax1,'on');
+    set(ax1,'Color',[0.10 0.10 0.16],'XColor',[0.85 0.85 0.90],'YColor',[0.85 0.85 0.90],...
+            'GridColor',[0.35 0.35 0.45],'GridAlpha',0.5,'FontSize',9,'FontName','Courier New');
+    plot(ax1,x_vec,y_vec,'Color',[0.20 0.75 1.00],'LineWidth',2.5,'DisplayName',['f(x)=' funcion_str]);
+    yline(ax1,0,'Color',[0.65 0.65 0.70],'LineWidth',1.0,'HandleVisibility','off');
+    pal=autumn(size(tabla,1)+2);
+    for n=1:size(tabla,1)
+        an=tabla(n,2); fna=tabla(n,4); bn=tabla(n,3); fnb=tabla(n,5);
+        xrn=tabla(n,6); c=pal(n,:);
+        if ~isfinite(fna)||~isfinite(fnb), continue; end
+        xs=linspace(an-0.1,bn+0.1,60);
+        if abs(bn-an)>1e-14
+            m=(fnb-fna)/(bn-an); ys=fna+m.*(xs-an);
+            ys(abs(ys)>y_rango*2)=NaN;
+            plot(ax1,xs,ys,'--','Color',[c 0.65],'LineWidth',1.2,'HandleVisibility','off');
+        end
+        scatter(ax1,xrn,0,50,c,'d','filled','MarkerEdgeColor','w','LineWidth',0.8,'HandleVisibility','off');
+    end
+    scatter(ax1,a,fa,100,[0.20 0.90 0.50],'^','filled','MarkerEdgeColor','w','DisplayName',sprintf('a=%.4f',a));
+    scatter(ax1,b,fb,100,[1.00 0.45 0.20],'v','filled','MarkerEdgeColor','w','DisplayName',sprintf('b=%.4f',b));
+    if isreal(raiz)&&isfinite(raiz)
+        scatter(ax1,raiz,0,150,[0.20 1.00 0.50],'p','filled','MarkerEdgeColor','w','DisplayName',sprintf('Raíz≈%.6f',raiz));
+    end
+    xlim(ax1,[x_min x_max]); ylim(ax1,[-y_rango y_rango]);
+    xlabel(ax1,'x','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    ylabel(ax1,'f(x)','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    title(ax1,{'Regla Falsa — Secantes',['f(x) = ' funcion_str]},'Color','w','FontWeight','bold');
+    lg1=legend(ax1,'show','Location','best');
+    set(lg1,'Color',[0.12 0.12 0.20],'TextColor',[0.90 0.90 0.95],'EdgeColor',[0.30 0.30 0.40]);
+
+    ax2=subplot(1,2,2); hold(ax2,'on'); grid(ax2,'on'); box(ax2,'on');
+    set(ax2,'Color',[0.10 0.10 0.16],'XColor',[0.85 0.85 0.90],'YColor',[0.85 0.85 0.90],...
+            'GridColor',[0.35 0.35 0.45],'GridAlpha',0.5,'FontSize',9,'FontName','Courier New','YScale','log');
+    errores=tabla(:,8); iters=tabla(:,1); mask_e=errores>0&isfinite(errores);
+    if any(mask_e)
+        plot(ax2,iters,errores,'o-','Color',[0.20 0.75 1.00],'LineWidth',2.2,'MarkerSize',8,...
+             'MarkerFaceColor',[0.20 0.75 1.00],'MarkerEdgeColor','w','DisplayName','Error %');
+        yline(ax2,tolerancia*100,'--','Color',[1.00 0.40 0.40],'LineWidth',1.6,'DisplayName','Tolerancia');
+    end
+    xlabel(ax2,'Iteración','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    ylabel(ax2,'Error relativo (%) — log','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    title(ax2,'Convergencia del Error','Color','w','FontWeight','bold');
+    lg2=legend(ax2,'show','Location','northeast');
+    set(lg2,'Color',[0.12 0.12 0.20],'TextColor',[0.90 0.90 0.95],'EdgeColor',[0.30 0.30 0.40]);
+end
+
+
+% =========================================================================
+%  3. PUNTO FIJO
+% =========================================================================
+function run_punto_fijo(funcion_str, f)
+    clc;
+
+    defaults = {'(2/5)*exp(x)', '1.5', '0.000001', '50'};
+    while true
+        prompt = {
+            sprintf(['f(x) = ' funcion_str '\n\ng(x) — despeje de x=g(x)\n'...
+                     '(ej: si f(x)=2*exp(x)-5*x, entonces g(x)=(2/5)*exp(x))\nEscribe g(x):']),
+            'Punto inicial x₀:',
+            'Tolerancia (ej. 0.000001):',
+            'Máximo de iteraciones:'
+        };
+        titulo='Punto Fijo — Parámetros';
+        dims=[1 68;1 68;1 68;1 68];
+        opts=struct('Interpreter','none','WindowStyle','normal');
+        resp=inputdlg(prompt,titulo,dims,defaults,opts);
+        if isempty(resp), return; end
+
+        g_str=strtrim(resp{1}); x0_str=strtrim(resp{2});
+        tol_str=strtrim(resp{3}); mit_str=strtrim(resp{4});
+
+        g_vec=strrep(g_str,'^','.^'); ok_g=true;
+        try; g=str2func(['@(x) ' g_vec]); g(1.0); catch; ok_g=false; end
+        x0_num=str2double(x0_str); tol_num=str2double(tol_str);
+        mit_num=round(str2double(mit_str));
+        ok_x0=~isnan(x0_num); ok_tol=~isnan(tol_num)&&tol_num>0&&tol_num<1;
+        ok_mit=~isnan(mit_num)&&mit_num>=1&&mit_num<=10000;
+
+        err='';
+        if ~ok_g,  err=[err '• g(x) inválida.\n']; end
+        if ~ok_x0, err=[err '• x₀ inválido.\n']; end
+        if ~ok_tol,err=[err '• Tolerancia inválida.\n']; end
+        if ~ok_mit,err=[err '• Máx. iteraciones inválido.\n']; end
+        if ~isempty(err)
+            uiwait(errordlg(sprintf(['Corrige:\n\n' err]),'Error','modal'));
+            defaults={g_str,x0_str,tol_str,mit_str}; continue
+        end
+        x0=x0_num; tolerancia=tol_num; max_iter=mit_num; break
+    end
+
+    h=1e-7; dg=@(x) (g(x+h)-g(x-h))/(2*h);
+
+    fprintf('\n============================================================\n');
+    fprintf('      MÉTODO DE PUNTO FIJO\n');
+    fprintf('============================================================\n');
+    fprintf('  f(x) = %s\n  g(x) = %s\n  x0=%.6f  |g''(x0)|=%.6f  tol=%e\n\n',...
+            funcion_str,g_str,x0,abs(dg(x0)),tolerancia);
+    fprintf('  %-5s  %-14s  %-14s  %-12s\n','Iter','x_n','g(x_n)','Error %');
+    fprintf('  %s\n',repmat('-',1,55));
+
+    x_actual=x0; convergio=false; num_iter=max_iter;
+    tabla=zeros(max_iter,4); hist_x=x0; raiz=x0;
+
+    for n=1:max_iter
+        x_nuevo=g(x_actual);
+        if ~isfinite(x_nuevo)||~isreal(x_nuevo)
+            fprintf('\n  DIVERGENCIA en iter %d.\n',n); break
+        end
+        if abs(x_nuevo)>1e-14, error_rel=abs((x_nuevo-x_actual)/x_nuevo)*100;
+        else, error_rel=abs(x_nuevo-x_actual)*100; end
+        tabla(n,:)=[n,x_actual,x_nuevo,error_rel];
+        fprintf('  %-5d  %+14.8f  %+14.8f  %12.6f%%\n',n,x_actual,x_nuevo,error_rel);
+        hist_x(end+1)=x_nuevo; x_actual=x_nuevo;
+        if error_rel<tolerancia*100, convergio=true; num_iter=n; raiz=x_nuevo; break; end
+    end
+    tabla=tabla(1:num_iter,:);
+    fprintf('  %s\n\n',repmat('-',1,55));
+
+    if convergio
+        fprintf('  >>> CONVERGENCIA: x* = %.10f,  f(x*) = %.4e\n\n',raiz,f(raiz));
+        msgbox(sprintf('✔ Raíz: %.10f\nf(x*): %.4e\nIter: %d\nError: %.2e%%',...
+               raiz,f(raiz),num_iter,tabla(end,4)),'Punto Fijo','help');
+    else
+        raiz=x_actual;
+        fprintf('  >>> No convergió. Prueba otro despeje g(x) o x₀.\n\n');
+    end
+
+    figure('Name',['Punto Fijo — f(x) = ' funcion_str],'Color',[0.06 0.06 0.10],'Position',[100 80 1100 580]);
+    margen=max(2.0,1.8*abs(raiz-x0));
+    x_min=min([x0,raiz,hist_x])-margen; x_max=max([x0,raiz,hist_x])+margen;
+    x_vec=linspace(x_min,x_max,700);
+    y_f=arrayfun(@(v) evalSeg(f,v),x_vec); y_g=arrayfun(@(v) evalSeg(g,v),x_vec);
+    y_todo=[y_f(isfinite(y_f)),y_g(isfinite(y_g)),x_vec];
+    y_rango=max(abs(y_todo))*1.4; y_rango=max(y_rango,2.0);
+
+    ax1=subplot(1,2,1); hold(ax1,'on'); grid(ax1,'on'); box(ax1,'on');
+    set(ax1,'Color',[0.10 0.10 0.16],'XColor',[0.85 0.85 0.90],'YColor',[0.85 0.85 0.90],...
+            'GridColor',[0.35 0.35 0.45],'GridAlpha',0.5,'FontSize',9,'FontName','Courier New');
+    plot(ax1,x_vec,y_f,'Color',[1.00 0.45 0.35],'LineWidth',2.2,'DisplayName',['f(x)=' funcion_str]);
+    plot(ax1,x_vec,y_g,'Color',[0.35 0.85 1.00],'LineWidth',2.2,'DisplayName',['g(x)=' g_str]);
+    plot(ax1,x_vec,x_vec,'--','Color',[0.75 0.75 0.80],'LineWidth',1.2,'DisplayName','y = x');
+    scatter(ax1,raiz,raiz,130,[0.20 1.00 0.50],'p','filled','MarkerEdgeColor','w','DisplayName',sprintf('x*≈%.5f',raiz));
+    xlim(ax1,[x_min x_max]); ylim(ax1,[-y_rango y_rango]);
+    xlabel(ax1,'x','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    ylabel(ax1,'y','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    title(ax1,'f(x), g(x) y y=x','Color','w','FontWeight','bold');
+    lg1=legend(ax1,'show','Location','best');
+    set(lg1,'Color',[0.12 0.12 0.20],'TextColor',[0.90 0.90 0.95],'EdgeColor',[0.30 0.30 0.40]);
+
+    ax2=subplot(1,2,2); hold(ax2,'on'); grid(ax2,'on'); box(ax2,'on');
+    set(ax2,'Color',[0.10 0.10 0.16],'XColor',[0.85 0.85 0.90],'YColor',[0.85 0.85 0.90],...
+            'GridColor',[0.35 0.35 0.45],'GridAlpha',0.5,'FontSize',9,'FontName','Courier New','YScale','log');
+    errores=tabla(:,4); iters=tabla(:,1); mask_e=errores>0&isfinite(errores);
+    if any(mask_e)
+        plot(ax2,iters,errores,'o-','Color',[0.35 0.85 1.00],'LineWidth',2.2,'MarkerSize',7,...
+             'MarkerFaceColor',[0.35 0.85 1.00],'MarkerEdgeColor','w','DisplayName','Error %');
+        yline(ax2,tolerancia*100,'--','Color',[1.00 0.40 0.40],'LineWidth',1.6,'DisplayName','Tolerancia');
+    end
+    xlabel(ax2,'Iteración','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    ylabel(ax2,'Error relativo (%) — log','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    title(ax2,'Convergencia del Error','Color','w','FontWeight','bold');
+    lg2=legend(ax2,'show','Location','northeast');
+    set(lg2,'Color',[0.12 0.12 0.20],'TextColor',[0.90 0.90 0.95],'EdgeColor',[0.30 0.30 0.40]);
+end
+
+
+% =========================================================================
+%  4. NEWTON-RAPHSON
+% =========================================================================
+function run_newton_raphson(funcion_str, f)
+    clc;
+
+    defaults = {'2','','','','0.000001'};
+    while true
+        prompt = {
+            sprintf(['f(x) = ' funcion_str '\n\nx₀  — OBLIGATORIO:']),
+            'x₁  — OPCIONAL (deja en blanco si no aplica):',
+            'x₂  — OPCIONAL:',
+            'x₃  — OPCIONAL:',
+            'Tolerancia (ej. 0.000001):'
+        };
+        titulo='Newton-Raphson — Parámetros';
+        dims=[1 60;1 60;1 60;1 60;1 60];
+        opts=struct('Interpreter','none','WindowStyle','normal');
+        resp=inputdlg(prompt,titulo,dims,defaults,opts);
+        if isempty(resp), return; end
+
+        x0_str=strtrim(resp{1}); tol_str=strtrim(resp{5});
+        x0_num=str2double(x0_str); ok_x0=~isnan(x0_num);
+        tol_num=str2double(tol_str); ok_tol=~isnan(tol_num)&&tol_num>0&&tol_num<1;
+
+        xi_strs={strtrim(resp{2}),strtrim(resp{3}),strtrim(resp{4})};
+        xi_vals=NaN(1,3); ok_xi=true; xi_err='';
+        for k=1:3
+            s=xi_strs{k};
+            if ~isempty(s)
+                v=str2double(s);
+                if isnan(v), ok_xi=false; xi_err=[xi_err sprintf('• x%d inválido.\n',k)];
+                else, xi_vals(k)=v; end
+            end
+        end
+
+        ok_fx0=false;
+        if ok_x0, try; vx=f(x0_num); if isreal(vx)&&isfinite(vx), ok_fx0=true; end; catch; end; end
+
+        err='';
+        if ~ok_x0, err=[err '• x₀ obligatorio.\n']; end
+        if ~ok_tol,err=[err '• Tolerancia inválida.\n']; end
+        if ~ok_xi, err=[err xi_err]; end
+        if ok_x0&&~ok_fx0, err=[err '• f(x₀) fuera del dominio.\n']; end
+        if ~isempty(err)
+            uiwait(errordlg(sprintf(['Corrige:\n\n' err]),'Error','modal'));
+            defaults={x0_str,resp{2},resp{3},resp{4},tol_str}; continue
+        end
+        x0=x0_num; tolerancia=tol_num;
+        puntos_dados=x0;
+        for k=1:3
+            if ~isnan(xi_vals(k)), puntos_dados(end+1)=xi_vals(k); end
+        end
+        break
+    end
+
+    max_iter=100; h=1e-7; df=@(x) (f(x+h)-f(x-h))/(2*h);
+
+    fprintf('\n============================================================\n');
+    fprintf('      MÉTODO DE NEWTON-RAPHSON\n');
+    fprintf('============================================================\n');
+    fprintf('  f(x) = %s  |  tol=%e\n\n',funcion_str,tolerancia);
+    fprintf('  %-6s  %-14s  %-14s  %-14s  %-14s  %-12s\n',...
+            'Punto','x_n','f(x_n)','f''(x_n)','x_(n+1)','Error %');
+    fprintf('  %s\n',repmat('-',1,84));
+
+    tabla=[]; hist_x=puntos_dados(:); convergio=false; num_iter_nR=0; raiz=puntos_dados(end);
+
+    for k=1:length(puntos_dados)-1
+        xn=puntos_dados(k); xn1=puntos_dados(k+1);
+        fxn=f(xn); dfxn=df(xn);
+        if abs(xn1)>1e-14, err=abs((xn1-xn)/xn1)*100; else, err=abs(xn1-xn)*100; end
+        fila=[k-1,xn,fxn,dfxn,xn1,err]; tabla(end+1,:)=fila;
+        fprintf('  x%-5d  %+14.8f  %+14.8f  %+14.8f  %+14.8f  %12.6f%%  [dado]\n',...
+                k-1,xn,fxn,dfxn,xn1,err);
+    end
+
+    idx_global=length(puntos_dados)-1; x_actual=puntos_dados(end);
+    for n=1:max_iter
+        fx=f(x_actual); dfx=df(x_actual);
+        if ~isreal(fx)||~isfinite(fx), break; end
+        if ~isreal(dfx)||~isfinite(dfx)||abs(dfx)<1e-12, break; end
+        x_nuevo=x_actual-fx/dfx;
+        if ~isreal(x_nuevo)||~isfinite(x_nuevo), break; end
+        if abs(x_nuevo)>1e-14, error_rel=abs((x_nuevo-x_actual)/x_nuevo)*100;
+        else, error_rel=abs(x_nuevo-x_actual)*100; end
+        fila=[idx_global,x_actual,fx,dfx,x_nuevo,error_rel];
+        tabla(end+1,:)=fila; hist_x(end+1)=x_nuevo; num_iter_nR=num_iter_nR+1;
+        fprintf('  x%-5d  %+14.8f  %+14.8f  %+14.8f  %+14.8f  %12.6f%%\n',...
+                idx_global,x_actual,fx,dfx,x_nuevo,error_rel);
+        idx_global=idx_global+1; x_actual=x_nuevo;
+        if error_rel<tolerancia*100, convergio=true; raiz=x_nuevo; break; end
+    end
+    fprintf('  %s\n\n',repmat('-',1,84));
+
+    if convergio
+        fprintf('  >>> CONVERGENCIA: x* = %.10f\n\n',raiz);
+        msgbox(sprintf('✔ Raíz: %.10f\nf(x*): %.4e\nIter N-R: %d\nError: %.2e%%',...
+               raiz,f(raiz),num_iter_nR,tabla(end,6)),'Newton-Raphson','help');
+    else
+        raiz=x_actual;
+        fprintf('  >>> No convergió. Intenta otro x0.\n\n');
+    end
+
+    mask=isfinite(tabla(:,2))&isreal(tabla(:,2))&isfinite(tabla(:,5))&isreal(tabla(:,5));
+    tabla_graf=tabla(mask,:);
+    if isempty(tabla_graf), return; end
+    raiz_graf=tabla_graf(end,5);
+
+    figure('Name',['Newton-Raphson — f(x) = ' funcion_str],'Color',[0.06 0.06 0.10],'Position',[100 80 1100 580]);
+    x_vals_iter=[tabla_graf(:,2);tabla_graf(:,5)];
+    x_vals_iter=x_vals_iter(isfinite(x_vals_iter)&isreal(x_vals_iter));
+    margen=max(2.5,2.0*abs(raiz_graf-x0));
+    x_min=min([x0;x_vals_iter])-margen; x_max=max([x0;x_vals_iter])+margen;
+    x_min=max(x_min,raiz_graf-50); x_max=min(x_max,raiz_graf+50);
+    x_vec=linspace(x_min,x_max,700);
+    y_vec=arrayfun(@(v) evalSeg(f,v),x_vec);
+    y_ok=y_vec(isfinite(y_vec)); y_rango=max(min(max(abs(y_ok))*1.5,1e6),1.0);
+
+    ax1=subplot(1,2,1); hold(ax1,'on'); grid(ax1,'on'); box(ax1,'on');
+    set(ax1,'Color',[0.10 0.10 0.16],'XColor',[0.85 0.85 0.90],'YColor',[0.85 0.85 0.90],...
+            'GridColor',[0.35 0.35 0.45],'GridAlpha',0.5,'FontSize',9,'FontName','Courier New');
+    plot(ax1,x_vec,y_vec,'Color',[0.20 0.75 1.00],'LineWidth',2.5,'DisplayName',['f(x)=' funcion_str]);
+    yline(ax1,0,'Color',[0.65 0.65 0.70],'LineWidth',1.0,'HandleVisibility','off');
+    pal=cool(size(tabla_graf,1)+2);
+    for n=1:size(tabla_graf,1)
+        xn=tabla_graf(n,2); fxn=tabla_graf(n,3); dfxn=tabla_graf(n,4); xn1=tabla_graf(n,5); c=pal(n,:);
+        if ~isfinite(fxn)||~isreal(fxn)||~isfinite(dfxn)||~isreal(dfxn), continue; end
+        scatter(ax1,xn,fxn,55,c,'filled','MarkerEdgeColor','w','LineWidth',0.8,'HandleVisibility','off');
+        x_t=linspace(min(xn,xn1)-0.4,max(xn,xn1)+0.4,80);
+        y_t=fxn+dfxn.*(x_t-xn); y_t(abs(y_t)>y_rango*2)=NaN;
+        plot(ax1,x_t,y_t,'--','Color',[c 0.75],'LineWidth',1.3,'HandleVisibility','off');
+        plot(ax1,[xn xn],[0 fxn],':','Color',[c 0.45],'LineWidth',1.0,'HandleVisibility','off');
+    end
+    if isreal(raiz_graf)&&isfinite(raiz_graf)
+        scatter(ax1,raiz_graf,0,140,[0.20 1.00 0.50],'p','filled','MarkerEdgeColor','w',...
+                'DisplayName',sprintf('Raíz≈%.6f',raiz_graf));
+    end
+    xlim(ax1,[x_min x_max]); ylim(ax1,[-y_rango y_rango]);
+    xlabel(ax1,'x','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    ylabel(ax1,'f(x)','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    title(ax1,'Newton-Raphson — Tangentes','Color','w','FontWeight','bold');
+    lg1=legend(ax1,'show','Location','best');
+    set(lg1,'Color',[0.12 0.12 0.20],'TextColor',[0.90 0.90 0.95],'EdgeColor',[0.30 0.30 0.40]);
+
+    ax2=subplot(1,2,2); hold(ax2,'on'); grid(ax2,'on'); box(ax2,'on');
+    set(ax2,'Color',[0.10 0.10 0.16],'XColor',[0.85 0.85 0.90],'YColor',[0.85 0.85 0.90],...
+            'GridColor',[0.35 0.35 0.45],'GridAlpha',0.5,'FontSize',9,'FontName','Courier New','YScale','log');
+    errores=tabla_graf(:,6); iters=(1:size(tabla_graf,1))'; mask_e=errores>0&isfinite(errores);
+    if any(mask_e)
+        plot(ax2,iters,errores,'o-','Color',[0.20 0.75 1.00],'LineWidth',2.2,'MarkerSize',8,...
+             'MarkerFaceColor',[0.20 0.75 1.00],'MarkerEdgeColor','w','DisplayName','Error %');
+        yline(ax2,tolerancia*100,'--','Color',[1.00 0.40 0.40],'LineWidth',1.6,'DisplayName','Tolerancia');
+    end
+    xlabel(ax2,'Iteración','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    ylabel(ax2,'Error relativo (%) — log','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    title(ax2,'Convergencia del Error','Color','w','FontWeight','bold');
+    lg2=legend(ax2,'show','Location','northeast');
+    set(lg2,'Color',[0.12 0.12 0.20],'TextColor',[0.90 0.90 0.95],'EdgeColor',[0.30 0.30 0.40]);
+end
+
+
+% =========================================================================
+%  5. SECANTE
+% =========================================================================
+function run_secante(funcion_str, f)
+    clc;
+
+    defaults={'1','2','0.000001'};
+    while true
+        prompt={
+            sprintf(['f(x) = ' funcion_str '\n\nx₀ — Primer punto inicial:']),
+            'x₁ — Segundo punto inicial (≠ x₀):',
+            'Tolerancia (ej. 0.000001):'
+        };
+        titulo='Secante — Parámetros';
+        dims=[1 60;1 60;1 60];
+        opts=struct('Interpreter','none','WindowStyle','normal');
+        resp=inputdlg(prompt,titulo,dims,defaults,opts);
+        if isempty(resp), return; end
+
+        x0_num=str2double(strtrim(resp{1})); x1_num=str2double(strtrim(resp{2}));
+        tol_num=str2double(strtrim(resp{3}));
+        ok_x0=~isnan(x0_num); ok_x1=~isnan(x1_num);
+        ok_dist=~(ok_x0&&ok_x1&&abs(x1_num-x0_num)<1e-14);
+        ok_tol=~isnan(tol_num)&&tol_num>0&&tol_num<1;
+        ok_fx0=false; ok_fx1=false;
+        if ok_x0, try; vx=f(x0_num); if isreal(vx)&&isfinite(vx), ok_fx0=true; end; catch; end; end
+        if ok_x1, try; vx=f(x1_num); if isreal(vx)&&isfinite(vx), ok_fx1=true; end; catch; end; end
+
+        err='';
+        if ~ok_x0, err=[err '• x₀ inválido.\n']; end
+        if ~ok_x1, err=[err '• x₁ inválido.\n']; end
+        if ok_x0&&ok_x1&&~ok_dist, err=[err '• x₀ y x₁ deben ser distintos.\n']; end
+        if ~ok_tol, err=[err '• Tolerancia inválida.\n']; end
+        if ok_x0&&~ok_fx0, err=[err '• f(x₀) fuera del dominio.\n']; end
+        if ok_x1&&~ok_fx1, err=[err '• f(x₁) fuera del dominio.\n']; end
+        if ~isempty(err)
+            uiwait(errordlg(sprintf(['Corrige:\n\n' err]),'Error','modal'));
+            defaults={resp{1},resp{2},resp{3}}; continue
+        end
+        x0=x0_num; x1=x1_num; tolerancia=tol_num; break
+    end
+
+    max_iter=100;
+    fprintf('\n============================================================\n');
+    fprintf('      MÉTODO DE LA SECANTE\n');
+    fprintf('============================================================\n');
+    fprintf('  f(x) = %s  |  x0=%.6f  x1=%.6f  tol=%e\n\n',funcion_str,x0,x1,tolerancia);
+    sep=repmat('-',1,95);
+    fprintf('  %-4s  %-13s  %-13s  %-15s  %-15s  %-13s  %-10s\n',...
+            'n','x_{n-1}','x_n','A=f(x_{n-1})','B=f(x_n)','x_{n+1}','Error %');
+    fprintf('  %s\n',sep);
+
+    xprev=x0; xact=x1; convergio=false; num_iter=0; raiz=x1;
+    tabla=zeros(max_iter,7); hist_x=[x0;x1];
+
+    for n=1:max_iter
+        A=f(xprev); B=f(xact);
+        if ~isreal(A)||~isfinite(A)||~isreal(B)||~isfinite(B)
+            fprintf('\n  DIVERGENCIA en iter %d.\n',n); break
+        end
+        denom=A-B;
+        if abs(denom)<1e-14, fprintf('\n  División por cero en iter %d.\n',n); break; end
+        xnuevo=xact-B*(xprev-xact)/denom;
+        if ~isreal(xnuevo)||~isfinite(xnuevo), break; end
+        if abs(xnuevo)>1e-14, error_rel=abs((xnuevo-xact)/xnuevo)*100;
+        else, error_rel=abs(xnuevo-xact)*100; end
+        tabla(n,:)=[n,xprev,xact,A,B,xnuevo,error_rel]; num_iter=n; hist_x(end+1)=xnuevo;
+        fprintf('  %-4d  %+13.8f  %+13.8f  %+15.8f  %+15.8f  %+13.8f  %9.5f%%\n',...
+                n,xprev,xact,A,B,xnuevo,error_rel);
+        xprev=xact; xact=xnuevo;
+        if error_rel<tolerancia*100, convergio=true; raiz=xnuevo; break; end
+    end
+    if num_iter==0, msgbox('No se pudo iterar.','Error','warn'); return; end
+    tabla=tabla(1:num_iter,:);
+    fprintf('  %s\n\n',sep);
+
+    if convergio
+        fprintf('  >>> CONVERGENCIA: x* = %.10f\n\n',raiz);
+        msgbox(sprintf('✔ Raíz: %.10f\nf(x*): %.4e\nIter: %d\nError: %.2e%%',...
+               raiz,f(raiz),num_iter,tabla(end,7)),'Secante','help');
+    else
+        raiz=xact;
+    end
+
+    mask=isfinite(tabla(:,2))&isreal(tabla(:,2))&isfinite(tabla(:,6))&isreal(tabla(:,6));
+    tabla_graf=tabla(mask,:);
+    if isempty(tabla_graf), return; end
+    raiz_graf=tabla_graf(end,6);
+
+    figure('Name',['Secante — f(x) = ' funcion_str],'Color',[0.06 0.06 0.10],'Position',[100 80 1100 580]);
+    x_vals_all=[tabla_graf(:,2);tabla_graf(:,3);tabla_graf(:,6)];
+    x_vals_all=x_vals_all(isfinite(x_vals_all)&isreal(x_vals_all));
+    margen=max(2.5,2.0*abs(raiz_graf-x0));
+    x_min=min(x_vals_all)-margen; x_max=max(x_vals_all)+margen;
+    x_min=max(x_min,raiz_graf-50); x_max=min(x_max,raiz_graf+50);
+    x_vec=linspace(x_min,x_max,800);
+    y_vec=arrayfun(@(v) evalSeg(f,v),x_vec);
+    y_ok=y_vec(isfinite(y_vec)); y_rango=max(min(max(abs(y_ok))*1.5,1e6),1.0);
+
+    ax1=subplot(1,2,1); hold(ax1,'on'); grid(ax1,'on'); box(ax1,'on');
+    set(ax1,'Color',[0.10 0.10 0.16],'XColor',[0.85 0.85 0.90],'YColor',[0.85 0.85 0.90],...
+            'GridColor',[0.35 0.35 0.45],'GridAlpha',0.5,'FontSize',9,'FontName','Courier New');
+    plot(ax1,x_vec,y_vec,'Color',[0.20 0.75 1.00],'LineWidth',2.5,'DisplayName',['f(x)=' funcion_str]);
+    yline(ax1,0,'Color',[0.65 0.65 0.70],'LineWidth',1.0,'HandleVisibility','off');
+    pal=cool(size(tabla_graf,1)+2);
+    for n=1:size(tabla_graf,1)
+        xpm=tabla_graf(n,2); xn=tabla_graf(n,3); A=tabla_graf(n,4); B=tabla_graf(n,5);
+        xn1=tabla_graf(n,6); c=pal(n,:);
+        if ~isfinite(A)||~isreal(A)||~isfinite(B)||~isreal(B), continue; end
+        scatter(ax1,xpm,A,50,c,'filled','MarkerEdgeColor','w','LineWidth',0.8,'HandleVisibility','off');
+        scatter(ax1,xn,B,50,c,'filled','MarkerEdgeColor','w','LineWidth',0.8,'HandleVisibility','off');
+        if abs(xn-xpm)>1e-14
+            xs=linspace(min([xpm,xn,xn1])-0.3,max([xpm,xn,xn1])+0.3,100);
+            m=(B-A)/(xn-xpm); ys=A+m.*(xs-xpm); ys(abs(ys)>y_rango*2)=NaN;
+            plot(ax1,xs,ys,'--','Color',[c 0.70],'LineWidth',1.3,'HandleVisibility','off');
+        end
+        plot(ax1,[xn1 xn1],[0 0],'o','Color',c,'MarkerSize',6,'MarkerFaceColor',c,'MarkerEdgeColor','w','HandleVisibility','off');
+    end
+    if isreal(raiz_graf)&&isfinite(raiz_graf)
+        scatter(ax1,raiz_graf,0,150,[0.20 1.00 0.50],'p','filled','MarkerEdgeColor','w',...
+                'DisplayName',sprintf('Raíz≈%.6f',raiz_graf));
+    end
+    xlim(ax1,[x_min x_max]); ylim(ax1,[-y_rango y_rango]);
+    xlabel(ax1,'x','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    ylabel(ax1,'f(x)','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    title(ax1,'Secante — Líneas secantes','Color','w','FontWeight','bold');
+    lg1=legend(ax1,'show','Location','best');
+    set(lg1,'Color',[0.12 0.12 0.20],'TextColor',[0.90 0.90 0.95],'EdgeColor',[0.30 0.30 0.40]);
+
+    ax2=subplot(1,2,2); hold(ax2,'on'); grid(ax2,'on'); box(ax2,'on');
+    set(ax2,'Color',[0.10 0.10 0.16],'XColor',[0.85 0.85 0.90],'YColor',[0.85 0.85 0.90],...
+            'GridColor',[0.35 0.35 0.45],'GridAlpha',0.5,'FontSize',9,'FontName','Courier New','YScale','log');
+    errores=tabla_graf(:,7); iters=tabla_graf(:,1); mask_e=errores>0&isfinite(errores);
+    if any(mask_e)
+        plot(ax2,iters,errores,'o-','Color',[0.20 0.75 1.00],'LineWidth',2.2,'MarkerSize',8,...
+             'MarkerFaceColor',[0.20 0.75 1.00],'MarkerEdgeColor','w','DisplayName','Error %');
+        yline(ax2,tolerancia*100,'--','Color',[1.00 0.40 0.40],'LineWidth',1.6,'DisplayName','Tolerancia');
+    end
+    xlabel(ax2,'Iteración','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    ylabel(ax2,'Error relativo (%) — log','Color',[0.85 0.85 0.90],'FontWeight','bold');
+    title(ax2,'Convergencia del Error','Color','w','FontWeight','bold');
+    lg2=legend(ax2,'show','Location','northeast');
+    set(lg2,'Color',[0.12 0.12 0.20],'TextColor',[0.90 0.90 0.95],'EdgeColor',[0.30 0.30 0.40]);
+end
+
+
+% =========================================================================
+%  6. MÜLLER
+% =========================================================================
+function run_muller(funcion_str, f)
+    clc;
+
+    defaults={'-1','0','1','0.000001','50'};
+    while true
+        prompt={
+            sprintf(['f(x) = ' funcion_str '\n\nx₀ — Primer punto:']),
+            'x₁ — Segundo punto (≠ x₀):',
+            'x₂ — Tercer punto (≠ x₀, ≠ x₁):',
+            'Tolerancia (ej. 0.000001):',
+            'Máximo de iteraciones:'
+        };
+        titulo='Müller — Parámetros';
+        dims=[1 60;1 60;1 60;1 60;1 60];
+        opts=struct('Interpreter','none','WindowStyle','normal');
+        resp=inputdlg(prompt,titulo,dims,defaults,opts);
+        if isempty(resp), return; end
+
+        x0_num=str2double(strtrim(resp{1})); x1_num=str2double(strtrim(resp{2}));
+        x2_num=str2double(strtrim(resp{3})); tol_num=str2double(strtrim(resp{4}));
+        mit_num=round(str2double(strtrim(resp{5})));
+        ok_x0=~isnan(x0_num); ok_x1=~isnan(x1_num); ok_x2=~isnan(x2_num);
+        ok_dist=true;
+        if ok_x0&&ok_x1&&ok_x2
+            if abs(x1_num-x0_num)<1e-14||abs(x2_num-x0_num)<1e-14||abs(x2_num-x1_num)<1e-14
+                ok_dist=false; end
+        end
+        ok_tol=~isnan(tol_num)&&tol_num>0&&tol_num<1;
+        ok_mit=~isnan(mit_num)&&mit_num>=1&&mit_num<=10000;
+
+        err='';
+        if ~ok_x0, err=[err '• x₀ inválido.\n']; end
+        if ~ok_x1, err=[err '• x₁ inválido.\n']; end
+        if ~ok_x2, err=[err '• x₂ inválido.\n']; end
+        if ~ok_dist, err=[err '• x₀, x₁, x₂ deben ser distintos.\n']; end
+        if ~ok_tol, err=[err '• Tolerancia inválida.\n']; end
+        if ~ok_mit, err=[err '• Máx. iteraciones inválido.\n']; end
+        if ~isempty(err)
+            uiwait(errordlg(sprintf(['Corrige:\n\n' err]),'Error','modal'));
+            defaults={resp{1},resp{2},resp{3},resp{4},resp{5}}; continue
+        end
+        x0=x0_num; x1=x1_num; x2=x2_num; tolerancia=tol_num; max_iter=mit_num; break
+    end
+
+    fprintf('\n============================================================\n');
+    fprintf('      MÉTODO DE MÜLLER\n');
+    fprintf('============================================================\n');
+    fprintf('  f(x) = %s  |  x0=%.4f  x1=%.4f  x2=%.4f  tol=%e\n\n',...
+            funcion_str,x0,x1,x2,tolerancia);
+    fprintf('  %-4s  %-13s  %-13s  %-13s  %-15s  %-13s  %-10s\n',...
+            'n','x_{n-2}','x_{n-1}','x_n','f(x_n)','x_{n+1}','Error %');
+    fprintf('  %s\n',repmat('-',1,95));
+
+    p0=x0; f0=f(p0); p1=x1; f1=f(p1); p2=x2; f2=f(p2);
+    convergio=false; num_iter=0; raiz=p2; tabla=zeros(max_iter,7);
+
+    for n=1:max_iter
+        if ~isfinite(f0)||~isfinite(f1)||~isfinite(f2), break; end
+        h1=p1-p0; h2=p2-p1;
+        if abs(h1)<1e-14||abs(h2)<1e-14, break; end
+        delta1=(f1-f0)/h1; delta2=(f2-f1)/h2; d=(delta2-delta1)/(h2+h1);
+        a=d; b=delta2+h2*d; c=f2;
+        if abs(a)<1e-14
+            if abs(b)<1e-14, break; end
+            t=-c/b;
+        else
+            disc=b^2-4*a*c;
+            if abs(b+sqrt(disc))>=abs(b-sqrt(disc)), t=-2*c/(b+sqrt(disc));
+            else, t=-2*c/(b-sqrt(disc)); end
+        end
+        p3=p2+t;
+        if ~isfinite(real(p3)), break; end
+        try; f3=f(p3); catch; break; end
+        if ~isfinite(real(f3)), break; end
+        if abs(p3)>1e-14, error_rel=abs((p3-p2)/p3)*100;
+        else, error_rel=abs(p3-p2)*100; end
+        tabla(n,:)=[n,p0,p1,p2,f2,p3,error_rel]; num_iter=n;
+        fprintf('  %-4d  %+13.8f  %+13.8f  %+13.8f  %+15.8f  %+13.8f  %9.5f%%\n',...
+                n,p0,p1,p2,f2,p3,error_rel);
+        if error_rel<tolerancia*100, convergio=true; raiz=p3; break; end
+        p0=p1; f0=f1; p1=p2; f1=f2; p2=p3; f2=f3;
+    end
+    if num_iter==0, fprintf('  No se pudo iterar.\n'); return; end
+    tabla=tabla(1:num_iter,:);
+    fprintf('  %s\n\n',repmat('-',1,95));
+
+    if convergio
+        fprintf('  >>> CONVERGENCIA: x* = %.10f\n\n',raiz);
+    else
+        raiz=p2;
+    end
+
+    mask=isfinite(tabla(:,2))&isreal(tabla(:,2))&isfinite(tabla(:,6))&isreal(tabla(:,6));
+    tabla_graf=tabla(mask,:);
+    if isempty(tabla_graf), return; end
+    raiz_graf=tabla_graf(end,6);
+
+    figure('Name',['Müller — f(x) = ' funcion_str],'Color',[0.06 0.06 0.10],'Position',[100 80 900 580]);
+    x_vals_all=[tabla_graf(:,2);tabla_graf(:,3);tabla_graf(:,4);tabla_graf(:,6)];
+    x_vals_all=x_vals_all(isfinite(x_vals_all)&isreal(x_vals_all));
+    margen=max(2.5,2.0*abs(raiz_graf-x0));
+    x_min=min(x_vals_all)-margen; x_max=max(x_vals_all)+margen;
+    x_min=max(x_min,raiz_graf-50); x_max=min(x_max,raiz_graf+50);
+    x_vec=linspace(x_min,x_max,800);
+    y_vec=zeros(size(x_vec));
+    for k=1:length(x_vec)
+        try; v=f(x_vec(k)); if isfinite(real(v)), y_vec(k)=real(v); else, y_vec(k)=NaN; end; catch; y_vec(k)=NaN; end
+    end
+    y_ok=y_vec(isfinite(y_vec)); y_rango=max(min(max(abs(y_ok))*1.5,1e6),1.0);
+
+    ax=gca; hold(ax,'on'); grid(ax,'on'); box(ax,'on');
+    set(ax,'Color',[0.10 0.10 0.16],'XColor',[0.85 0.85 0.90],'YColor',[0.85 0.85 0.90],...
+           'GridColor',[0.35 0.35 0.45],'GridAlpha',0.5,'FontSize',10,'FontName','Courier New');
+    plot(ax,x_vec,y_vec,'Color',[0.20 0.75 1.00],'LineWidth',2.5,'DisplayName',['f(x)=' funcion_str]);
+    yline(ax,0,'Color',[0.65 0.65 0.70],'LineWidth',1.0,'HandleVisibility','off');
+    if isreal(raiz_graf)&&isfinite(raiz_graf)
+        scatter(ax,raiz_graf,0,150,[0.20 1.00 0.50],'p','filled','MarkerEdgeColor','w','LineWidth',1.2,...
+                'DisplayName',sprintf('Raíz x*≈%.6f',raiz_graf));
+    end
+    scatter(ax,x0,f(x0),90,[1.00 0.78 0.10],'^','filled','MarkerEdgeColor','w','DisplayName',sprintf('x_0=%.4f',x0));
+    scatter(ax,x1,f(x1),90,[1.00 0.50 0.20],'v','filled','MarkerEdgeColor','w','DisplayName',sprintf('x_1=%.4f',x1));
+    scatter(ax,x2,f(x2),90,[1.00 0.30 0.60],'s','filled','MarkerEdgeColor','w','DisplayName',sprintf('x_2=%.4f',x2));
+    xlim(ax,[x_min x_max]); ylim(ax,[-y_rango y_rango]);
+    xlabel(ax,'x','Color',[0.85 0.85 0.90],'FontSize',12,'FontWeight','bold');
+    ylabel(ax,'f(x)','Color',[0.85 0.85 0.90],'FontSize',12,'FontWeight','bold');
+    title(ax,{sprintf('Müller — %d iteraciones',num_iter),['f(x) = ' funcion_str]},...
+          'Color','w','FontSize',11,'FontWeight','bold');
+    lg=legend(ax,'show','Location','best');
+    set(lg,'Color',[0.12 0.12 0.20],'TextColor',[0.90 0.90 0.95],'EdgeColor',[0.30 0.30 0.40],'FontSize',9);
+end
+
+
+% =========================================================================
+%  7. BAIRSTOW
+% =========================================================================
+function run_bairstow()
+    clc;
+    fprintf('===============================================\n');
+    fprintf('           METODO DE BAIRSTOW (UMG)           \n');
+    fprintf('===============================================\n');
+    fprintf(' Ejemplo: x^4 + 5x^3 + 3x^2 - 5x - 9  =>  [1 5 3 -5 -9]\n');
+    p_input = input(' Coeficientes [a_n ... a_0]: ');
+    if isempty(p_input), error('Debe ingresar coeficientes.'); end
+    a = p_input; r = input(' Ingrese r0: '); s = input(' Ingrese s0: ');
+    max_iter_input = input(' Maximo de iteraciones: ');
+    tol=0.0001; a_original=a; n=length(a)-1; raices=[]; iter_glob=0; ciclo=0;
+
+    while n>=3
+        ciclo=ciclo+1; err_r=100; err_s=100; iter_local=0;
+        fprintf('\n +----------------------------------------------------+\n');
+        fprintf(' |  CICLO %d - Polinomio grado %d                      |\n',ciclo,n);
+        fprintf(' +------+----------+----------+------------+------------+\n');
+        fprintf(' | Iter |    r     |    s     |  %% Err r   |  %% Err s   |\n');
+        fprintf(' +------+----------+----------+------------+------------+\n');
+        while (err_r>tol||err_s>tol)&&iter_local<max_iter_input
+            iter_glob=iter_glob+1; iter_local=iter_local+1;
+            b=zeros(1,n+1); b(1)=a(1); b(2)=a(2)+r*b(1);
+            for i=3:n+1, b(i)=a(i)+r*b(i-1)+s*b(i-2); end
+            c=zeros(1,n+1); c(1)=b(1); c(2)=b(2)+r*c(1);
+            for i=3:n, c(i)=b(i)+r*c(i-1)+s*c(i-2); end
+            det_jac=c(n-1)^2-c(n)*c(n-2);
+            if abs(det_jac)>1e-12
+                dr=(-b(n)*c(n-1)+b(n+1)*c(n-2))/det_jac;
+                ds=(-b(n+1)*c(n-1)+b(n)*c(n))/det_jac;
+            else, r=r+0.1; s=s+0.1; continue; end
+            r_new=r+dr; s_new=s+ds;
+            if abs(r_new)>1e-12, err_r=abs(dr/r_new)*100; else, err_r=abs(dr)*100; end
+            if abs(s_new)>1e-12, err_s=abs(ds/s_new)*100; else, err_s=abs(ds)*100; end
+            r=r_new; s=s_new;
+            fprintf(' | %4d | %8.4f | %8.4f | %10.4f | %10.4f |\n',iter_glob,r,s,err_r,err_s);
+        end
+        fprintf(' +------+----------+----------+------------+------------+\n');
+        disc=r^2+4*s;
+        fprintf('\n  Factor cuadratico ciclo %d: x^2-(%.4f)x-(%.4f)=0\n',ciclo,r,s);
+        x1=(r+sqrt(complex(disc)))/2; x2=(r-sqrt(complex(disc)))/2;
+        if isreal(x1), fprintf('  => REALES: %.6f  y  %.6f\n',real(x1),real(x2));
+        else, fprintf('  => COMPLEJAS: %.6f%+.6fi  y  %.6f%+.6fi\n',real(x1),imag(x1),real(x2),imag(x2)); end
+        raices=[raices,x1,x2]; n=n-2; a=b(1:n+1);
+    end
+    if n==2
+        disc=a(2)^2-4*a(1)*a(3);
+        x1=(-a(2)+sqrt(complex(disc)))/(2*a(1)); x2=(-a(2)-sqrt(complex(disc)))/(2*a(1));
+        if isreal(x1), fprintf('  => REALES finales: %.6f  y  %.6f\n',real(x1),real(x2));
+        else, fprintf('  => COMPLEJAS finales: %.6f%+.6fi  y  %.6f%+.6fi\n',real(x1),imag(x1),real(x2),imag(x2)); end
+        raices=[raices,x1,x2];
+    elseif n==1
+        x1=-a(2)/a(1); fprintf('\n  Raiz final: %.6f\n',x1); raices=[raices,x1];
+    end
+    fprintf('\n ===============================================\n');
+    fprintf('           RESULTADOS DE LAS RAICES            \n ===============================================\n');
+    for i=1:length(raices)
+        if abs(imag(raices(i)))<1e-8, fprintf('  [x%d] REAL:     %.6f\n',i,real(raices(i)));
+        else, fprintf('  [x%d] COMPLEJA: %.6f%+.6fi\n',i,real(raices(i)),imag(raices(i))); end
+    end
+    fprintf(' ===============================================\n');
+    r_reales=real(raices(abs(imag(raices))<1e-8));
+    if ~isempty(r_reales), lim_inf=min(r_reales)-2; lim_sup=max(r_reales)+2;
+    else, lim_inf=-5; lim_sup=5; end
+    x_v=linspace(lim_inf,lim_sup,1000); y_v=polyval(a_original,x_v);
+    figure('Name','Bairstow — Polinomio','Color',[1 1 1]);
+    plot(x_v,y_v,'LineWidth',2,'Color',[0 0.45 0.74]); hold on;
+    yline(0,'k','LineWidth',1.2); xline(0,'k','LineWidth',1.2); grid on;
+    if ~isempty(r_reales)
+        plot(r_reales,zeros(size(r_reales)),'ro','MarkerSize',8,'MarkerFaceColor','r');
+    end
+    title('Bairstow — Gráfica del Polinomio'); xlabel('x'); ylabel('P(x)');
+end
+
+
+% =========================================================================
+%  8. DIVISIÓN SINTÉTICA
+% =========================================================================
+function run_div_sintetica()
+    clc; close all;
+    fprintf('--- División Sintética ---\n');
+    p = input('Coeficientes del polinomio [an ... a0]: ');
+    a = input('Raíz divisora (valor "a" en x-a): ');
+    n=length(p); cociente=zeros(1,n-1); cociente(1)=p(1);
+    for i=2:n-1, cociente(i)=p(i)+(cociente(i-1)*a); end
+    residuo=p(end)+(cociente(end)*a);
+    fprintf('\n----------------------------------------\n');
+    if residuo==0, fprintf('¡Factorizable! Residuo = 0\n');
+    else, fprintf('Residuo: %.4f\n',residuo); end
+    fprintf('Coeficientes del cociente: '); disp(cociente);
+    r_todas=roots(p); real_roots=r_todas(imag(r_todas)==0);
+    fprintf('Raíces reales: '); fprintf('%.4f  ',real_roots); fprintf('\n');
+    if isempty(real_roots), x_min=-5; x_max=5;
+    else, x_min=min(real_roots)-2; x_max=max(real_roots)+2; end
+    x=linspace(x_min,x_max,500); y=polyval(p,x);
+    figure('Name','División Sintética');
+    plot(x,y,'LineWidth',2,'Color',[0 0.4470 0.7410]); grid on; hold on;
+    yline(0,'k--','LineWidth',1); xline(0,'k--','LineWidth',1);
+    if ~isempty(real_roots)
+        plot(real_roots,zeros(size(real_roots)),'ro','MarkerSize',8,'MarkerFaceColor','r');
+    end
+    title(['División Sintética por (x-' num2str(a) ')']);
+    xlabel('x'); ylabel('P(x)'); legend('P(x)','Eje X','','Raíces Reales');
+end
+
+
+% =========================================================================
+%  9. TAYLOR / MACLAURIN
+% =========================================================================
+function run_taylor()
+    clc; close all;
+    syms x;
+    fprintf('========================================\n  Polinomio de Taylor / Maclaurin\n========================================\n');
+    try
+        func_str = input('1. Ingresa f(x) (ej: -4*sin(-3*x)): ','s');
+        if isempty(func_str), error('Función vacía.'); end
+        f = str2sym(func_str);
+        a = input('2. Centro de expansión a [0]: ');
+        if isempty(a), a=0; end
+        n = input('3. Grado del polinomio n: ');
+        if isempty(n)||n<0, error('Grado inválido.'); end
+        val_eval = input('4. Valor x a evaluar: ');
+        if isempty(val_eval), error('Valor vacío.'); end
+    catch ME, fprintf('\nERROR: %s\n',ME.message); return; end
+
+    polinomio=taylor(f,x,'ExpansionPoint',a,'Order',n+1);
+    val_p=double(subs(polinomio,x,val_eval));
+    val_r=double(subs(f,x,val_eval));
+    val_c=double(subs(f,x,a));
+    err_abs=abs(val_r-val_p);
+
+    fprintf('\n--- RESULTADOS ---\nP_%d(x):\n',n); disp(polinomio);
+    fprintf('  f(%g)   = %.10f\n  P(%g)   = %.10f\n  Error = %.10e\n\n',val_eval,val_r,val_eval,val_p,err_abs);
+
+    figure('Name','Taylor / Maclaurin','Color','w');
+    hold on; grid on;
+    radio=max(2,abs(val_eval-a)*3); x_lims=[a-radio, a+radio];
+    line([val_eval val_eval],[val_r val_p],'Color','r','LineStyle',':','LineWidth',1.5,'HandleVisibility','off');
+    h1=fplot(f,x_lims,'LineWidth',2.5,'Color',[0 0.4470 0.7410]);
+    h2=fplot(polinomio,x_lims,'--','LineWidth',2,'Color',[0.8500 0.3250 0.0980]);
+    h3=plot(a,val_c,'ko','MarkerFaceColor','k','MarkerSize',8);
+    h4=plot(val_eval,val_p,'ro','MarkerFaceColor','r','MarkerSize',8);
+    title({['Taylor Grado ' num2str(n)],['f(x)=' func_str '  en a=' num2str(a)]},'Interpreter','none');
+    xlabel('x'); ylabel('f(x)');
+    legend([h1,h2,h3,h4],{'f(x) original','Polinomio Taylor','Centro (a)','Punto evaluado'},'Location','best');
+    hold off
+end
+
+
+% =========================================================================
+%  10. NEWTON — PARÁBOLA POR 3 PUNTOS
+% =========================================================================
+function run_newton_parabola()
+    close all;
+    msgbox(sprintf(['NEWTON — Parábola por 3 Puntos\n\n' ...
+                    'Forma el sistema:\n  y = a·x² + b·x + c\n\n' ...
+                    'Presiona OK para ingresar los puntos.']),'Newton Parábola','help');
+    uiwait(gcf);
+
+    defaults={'1','1','2','4','3','9',''};
+    while true
+        prompt={'P1 — x₁:','P1 — y₁:','P2 — x₂:','P2 — y₂:','P3 — x₃:','P3 — y₃:',...
+                'x a evaluar (opcional):'};
+        titulo='Newton Parábola'; dims=repmat([1 50],7,1);
+        opts=struct('Interpreter','none','WindowStyle','normal');
+        resp=inputdlg(prompt,titulo,dims,defaults,opts);
+        if isempty(resp), return; end
+        nums=cellfun(@(s) str2double(strtrim(s)), resp(1:6));
+        xe_str=strtrim(resp{7}); eval_x=false; xe_val=NaN;
+        if ~isempty(xe_str), xe_val=str2double(xe_str); if ~isnan(xe_val), eval_x=true; end; end
+        ok=~any(isnan(nums));
+        ok_dist=ok&&~(abs(nums(1)-nums(3))<1e-14||abs(nums(1)-nums(5))<1e-14||abs(nums(3)-nums(5))<1e-14);
+        err='';
+        if ~ok, err=[err '• Todos los valores deben ser números.\n']; end
+        if ok&&~ok_dist, err=[err '• x₁, x₂, x₃ deben ser distintos.\n']; end
+        if ~isempty(err), uiwait(errordlg(sprintf(['Corrige:\n\n' err]),'Error','modal'));
+            defaults=resp; continue; end
+        x1=nums(1); y1=nums(2); x2=nums(3); y2=nums(4); x3=nums(5); y3=nums(6); break
+    end
+
+    A_mat=[x1^2 x1 1;x2^2 x2 1;x3^2 x3 1]; B_vec=[y1;y2;y3];
+    det_A=det(A_mat);
+    if abs(det_A)<1e-12, uiwait(errordlg('Sistema singular (puntos colineales).','Error','modal')); return; end
+    X=A_mat\B_vec; a_c=X(1); b_c=X(2); c_c=X(3);
+    parabola=@(xv) a_c*xv.^2+b_c*xv+c_c;
+    sb='+'; if b_c<0, sb='-'; end; sc='+'; if c_c<0, sc='-'; end;
+
+    fprintf('\n============================================================\n');
+    fprintf('   NEWTON — Parábola por 3 Puntos\n');
+    fprintf('============================================================\n');
+    fprintf('  P1=(%.4f,%.4f)  P2=(%.4f,%.4f)  P3=(%.4f,%.4f)\n',x1,y1,x2,y2,x3,y3);
+    fprintf('  a=%+.8f  b=%+.8f  c=%+.8f\n',a_c,b_c,c_c);
+    fprintf('  y = %.6f·x² %s %.6f·x %s %.6f\n\n',a_c,sb,abs(b_c),sc,abs(c_c));
+    if eval_x, fprintf('  y(%.4f) = %.10f\n\n',xe_val,parabola(xe_val)); end
+
+    xs_all=[x1,x2,x3]; mg=max(2.0,0.6*(max(xs_all)-min(xs_all)));
+    x_min=min(xs_all)-mg; x_max=max(xs_all)+mg;
+    x_vec=linspace(x_min,x_max,600); y_vec=parabola(x_vec);
+
+    figure('Name','Newton Parábola','Color',[0.06 0.06 0.10],'Position',[100 80 900 580]);
+    ax=gca; hold(ax,'on'); grid(ax,'on'); box(ax,'on');
+    set(ax,'Color',[0.10 0.10 0.16],'XColor',[0.85 0.85 0.90],'YColor',[0.85 0.85 0.90],...
+           'GridColor',[0.35 0.35 0.45],'GridAlpha',0.5,'FontSize',10,'FontName','Courier New');
+    ec=sprintf('y=%.4f·x² %s %.4f·x %s %.4f',a_c,sb,abs(b_c),sc,abs(c_c));
+    plot(ax,x_vec,y_vec,'Color',[0.20 0.75 1.00],'LineWidth',2.5,'DisplayName',ec);
+    yline(ax,0,'Color',[0.55 0.55 0.68],'LineWidth',0.8,'HandleVisibility','off');
+    col={{[1.00 0.75 0.10]},{[0.40 1.00 0.55]},{[1.00 0.45 0.30]}};
+    pxs=[x1,x2,x3]; pys=[y1,y2,y3];
+    for k=1:3
+        c=col{k}{1};
+        scatter(ax,pxs(k),pys(k),130,c,'filled','MarkerEdgeColor','w','DisplayName',sprintf('P%d=(%.2f,%.2f)',k,pxs(k),pys(k)));
+    end
+    if eval_x
+        scatter(ax,xe_val,parabola(xe_val),120,[0.85 0.50 1.00],'d','filled','MarkerEdgeColor','w',...
+                'DisplayName',sprintf('x=%.4f→y=%.6f',xe_val,parabola(xe_val)));
+    end
+    xlim(ax,[x_min x_max]);
+    xlabel(ax,'x','Color',[0.85 0.85 0.90],'FontSize',12,'FontWeight','bold');
+    ylabel(ax,'y','Color',[0.85 0.85 0.90],'FontSize',12,'FontWeight','bold');
+    title(ax,{'Newton — Parábola por 3 Puntos',ec},'Color','w','FontSize',11,'FontWeight','bold');
+    lg=legend(ax,'show','Location','best');
+    set(lg,'Color',[0.12 0.12 0.20],'TextColor',[0.90 0.90 0.95],'EdgeColor',[0.30 0.30 0.40]);
+end
+
+
+% =========================================================================
+%  11. NEWTON-RAPHSON — SISTEMAS 3×3
+% =========================================================================
+function run_newton_sistema3x3()
+    clc;
+    fprintf('====================================================\n  NEWTON-RAPHSON — SISTEMAS 3×3\n====================================================\n\n');
+    syms x y z;
+    fprintf('Ingrese los términos con variables a la izquierda y constantes a la derecha.\n');
+    fprintf('Use formato MATLAB (ej: 3*x + 4*y - 5*z)\n\n');
+    eq1_lhs=input('Ecuación 1 - Lado izquierdo: ','s'); eq1_rhs=input('Ecuación 1 - Lado derecho: ','s');
+    fprintf('----------------------------------------------------\n');
+    eq2_lhs=input('Ecuación 2 - Lado izquierdo: ','s'); eq2_rhs=input('Ecuación 2 - Lado derecho: ','s');
+    fprintf('----------------------------------------------------\n');
+    eq3_lhs=input('Ecuación 3 - Lado izquierdo: ','s'); eq3_rhs=input('Ecuación 3 - Lado derecho: ','s');
+    fprintf('====================================================\n');
+    f1=str2sym(eq1_lhs)-str2sym(eq1_rhs); f2=str2sym(eq2_lhs)-str2sym(eq2_rhs);
+    f3=str2sym(eq3_lhs)-str2sym(eq3_rhs); F_sym=[f1;f2;f3];
+    J_sym=jacobian(F_sym,[x,y,z]);
+    F=matlabFunction(F_sym,'Vars',[x,y,z]); J=matlabFunction(J_sym,'Vars',[x,y,z]);
+    fprintf('\nPUNTO INICIAL (P0):\n');
+    x0=input('x: '); y0=input('y: '); z0=input('z: ');
+    P_sys=[x0;y0;z0]; n_iter=input('\nNúmero de iteraciones: ');
+    hist_iter=(0:n_iter)'; hist_x=zeros(n_iter+1,1); hist_y=zeros(n_iter+1,1);
+    hist_z=zeros(n_iter+1,1); hist_normF=zeros(n_iter+1,1);
+    hist_x(1)=P_sys(1); hist_y(1)=P_sys(2); hist_z(1)=P_sys(3);
+    hist_normF(1)=norm(F(P_sys(1),P_sys(2),P_sys(3)));
+    for i=1:n_iter
+        fprintf('\n=== ITERACIÓN %d ===\n',i);
+        F_val=F(P_sys(1),P_sys(2),P_sys(3)); J_val=J(P_sys(1),P_sys(2),P_sys(3));
+        deltaP=J_val\(-F_val); P_sys=P_sys+deltaP;
+        fprintf('F(P%d): ',i-1); disp(F_val'); fprintf('J(P%d):\n',i-1); disp(J_val);
+        fprintf('ΔP%d: ',i-1); disp(deltaP'); fprintf('P%d: ',i); disp(P_sys');
+        hist_x(i+1)=P_sys(1); hist_y(i+1)=P_sys(2); hist_z(i+1)=P_sys(3);
+        hist_normF(i+1)=norm(F(P_sys(1),P_sys(2),P_sys(3)));
+    end
+    tabla_resultados=table(hist_iter,hist_x,hist_y,hist_z,hist_normF,'VariableNames',{'Iter','x','y','z','Norma_F'});
+    fprintf('\n=== TABLA RESUMEN ===\n'); disp(tabla_resultados);
+    figure('Name','Newton-Raphson 3×3','NumberTitle','off');
+    subplot(1,2,1); plot3(hist_x,hist_y,hist_z,'-o','LineWidth',2,'MarkerSize',6,'MarkerFaceColor','r');
+    grid on; xlabel('X'); ylabel('Y'); zlabel('Z'); title('Trayectoria 3D');
+    text(hist_x(1),hist_y(1),hist_z(1),'  P₀','Color','b','FontWeight','bold');
+    text(hist_x(end),hist_y(end),hist_z(end),'  Solución','Color',[0 0.5 0],'FontWeight','bold');
+    subplot(1,2,2); semilogy(hist_iter,hist_normF,'-s','LineWidth',2,'Color',[0.5 0 0.5],'MarkerFaceColor',[0.5 0 0.5]);
+    grid on; xlabel('Iteración'); ylabel('||F|| (log)'); title('Convergencia');
+end
+
+
+% =========================================================================
+%  12. SISTEMAS 3×3 (CRAMER + MATRIZ INVERSA)
+% =========================================================================
+function run_sistemas3x3()
+    clc;
+    fprintf('--- Sistema 3×3: Cramer + Matriz Inversa ---\n');
+    A=input('Matriz A [a11 a12 a13; a21 a22 a23; a31 a32 a33]: ');
+    B=input('Vector B [b1; b2; b3]: ');
+    detA=det(A);
+    if detA==0, disp('Sistema sin solución única (det=0).'); return; end
+    Ax=A; Ay=A; Az=A; Ax(:,1)=B; Ay(:,2)=B; Az(:,3)=B;
+    dX=det(Ax); dY=det(Ay); dZ=det(Az);
+    x_c=dX/detA; y_c=dY/detA; z_c=dZ/detA;
+    invA=inv(A); X_inv=invA*B;
+    fprintf('\n--- RESULTADOS ---\nMatriz A:\n'); disp(A);
+    fprintf('Inversa A^-1:\n'); disp(invA);
+    fprintf('dA=%.4f  dX=%.4f  dY=%.4f  dZ=%.4f\n',detA,dX,dY,dZ);
+    fprintf('\nCramer:         x=%.4f  y=%.4f  z=%.4f\n',x_c,y_c,z_c);
+    fprintf('Matriz Inversa: x=%.4f  y=%.4f  z=%.4f\n',X_inv(1),X_inv(2),X_inv(3));
+end
+
+
+% =========================================================================
+%  13. CÁLCULO DE MATRIZ INVERSA
+% =========================================================================
+function run_matriz_inversa()
+    clc;
+    fprintf('--- Cálculo de Matriz Inversa ---\n');
+    A=input('Ingresa la matriz A (ej: [1 2 3; 4 5 6; 7 8 10]): ');
+    [n,m]=size(A);
+    if n~=m, error('La matriz debe ser cuadrada.'); end
+    A_inv=inv(A);
+    fprintf('\nMatriz A:\n'); disp(A);
+    fprintf('Inversa A^-1:\n'); disp(A_inv);
+    fprintf('Verificación A·A^-1 (debe ser identidad):\n'); disp(A*A_inv);
+    fprintf('Determinante: %.6f\n',det(A));
+    fprintf('Número de condición: %.6f\n',cond(A));
+end
+
+
+% =========================================================================
+%  Función auxiliar: evaluación segura de f(x)
+% =========================================================================
+function y = evalSeg(fun, v)
+    try
+        y = fun(v);
+        if ~isfinite(y) || ~isreal(y), y = NaN; end
+    catch
+        y = NaN;
+    end
+end
