@@ -1,6 +1,7 @@
 % =========================================================================
 %  PROYECTO UNIFICADO — MÉTODOS NUMÉRICOS
 %  Universidad Mariano Gálvez de Guatemala
+Jedinson Jahir Torres Corado
 % =========================================================================
 %  FLUJO:
 %    PASO 1 — Ingresar f(x) y graficarla
